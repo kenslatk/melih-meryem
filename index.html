@@ -6,27 +6,25 @@
 <title>İlk Sevgililer Günümüz ❤️</title>
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
 body{
-margin:0;
 font-family:Arial, sans-serif;
 overflow:hidden;
 color:white;
 }
 
-/* ARKA PLAN */
+/* BACKGROUND */
 #bg{
 position:fixed;
-top:0;
-left:0;
 width:100%;
 height:100%;
-background:url("background.png") no-repeat center center;
+background:url("background.jpg") center center no-repeat;
 background-size:cover;
 z-index:-2;
 }
 
-/* KARARTMA */
-#overlay{
+#dark{
 position:fixed;
 width:100%;
 height:100%;
@@ -42,14 +40,15 @@ height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-padding:40px;
 text-align:center;
+padding:40px;
 z-index:5;
 }
 
 #intro h1{
 font-size:28px;
 max-width:800px;
+line-height:1.5;
 }
 
 /* SLIDESHOW */
@@ -76,19 +75,20 @@ display:flex;
 
 .slide img{
 max-width:90vw;
-max-height:75vh;
+max-height:70vh;
 object-fit:contain;
-border-radius:15px;
-box-shadow:0 0 40px rgba(255,0,80,0.6);
+border-radius:20px;
+box-shadow:0 0 40px rgba(255,0,100,0.7);
 }
 
 .message{
-margin-top:20px;
+margin-top:25px;
 font-size:20px;
-padding:0 20px;
+padding:0 30px;
+text-align:center;
 }
 
-/* KALP */
+/* HEART */
 .heart{
 position:fixed;
 bottom:-20px;
@@ -109,23 +109,25 @@ position:fixed;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-font-size:50px;
+font-size:60px;
 display:none;
 z-index:20;
-text-shadow:0 0 30px red;
+text-shadow:0 0 40px red;
 }
 </style>
 </head>
 <body>
 
 <div id="bg"></div>
-<div id="overlay"></div>
+<div id="dark"></div>
 
 <div id="intro">
 <h1>
 İLK SEVGİLİLER GÜNÜMÜZ KUTLU OLSUN ❤️<br><br>
-Seninle yan yana olmak, güvenmek, rahat olmak…
-Bunların hepsi seninle mümkün.<br><br>
+Seninle yan yana olmak…<br>
+Sana güvenebilmek…<br>
+Yanında rahat olmak…<br><br>
+Bunların hepsi seninle anlamlı.<br>
 Nice birlikte geçireceğimiz günlere…
 </h1>
 </div>
@@ -136,8 +138,33 @@ Nice birlikte geçireceğimiz günlere…
 <audio id="music"></audio>
 
 <script>
+
+/* FOTO & MESAJ */
 const totalPhotos = 20;
 const slideshow = document.getElementById("slideshow");
+
+const messages = [
+"Seninle başlayan her an başka güzel...",
+"Yanında her şey daha kolay ❤️",
+"Birlikte gülmek en sevdiğim şey.",
+"Elini tutmak huzur demek.",
+"İyi ki varsın.",
+"Kalbim seninle tamam.",
+"Hayatımın en güzel parçasısın.",
+"Yanında kendim olabiliyorum.",
+"Güvenmek böyle bir şeymiş.",
+"Birlikte güçlüyüz.",
+"Birlikte mutluyuz.",
+"Yan yana olmak yetiyor.",
+"Sen benim en güzel alışkanlığımsın.",
+"Kalbim hep seninle.",
+"Biz bir takımız.",
+"Omuz omuza her şey mümkün.",
+"Gözlerine bakmak bile yeter.",
+"En huzurlu yer senin yanın.",
+"İyi ki biz olduk.",
+"Ve hep öyle kalacağız ❤️"
+];
 
 for(let i=1;i<=totalPhotos;i++){
 let slide=document.createElement("div");
@@ -146,19 +173,27 @@ slide.className="slide";
 let img=document.createElement("img");
 img.src="foto"+i+".jpg";
 
+let text=document.createElement("div");
+text.className="message";
+text.textContent=messages[i-1] || "";
+
 slide.appendChild(img);
+slide.appendChild(text);
 slideshow.appendChild(slide);
 }
 
 const slides=document.querySelectorAll(".slide");
 let current=0;
+let slideInterval;
 
+/* INTRO 20 SN */
 setTimeout(()=>{
 document.getElementById("intro").style.display="none";
 slideshow.style.display="block";
 showSlide(0);
-setTimeout(startSlideshow,5000);
+slideInterval=setInterval(nextSlide,5000);
 startHearts(600);
+startMusic();
 },20000);
 
 function showSlide(index){
@@ -166,17 +201,17 @@ slides.forEach(s=>s.classList.remove("active"));
 slides[index].classList.add("active");
 }
 
-function startSlideshow(){
-setInterval(()=>{
+function nextSlide(){
 current++;
 if(current>=slides.length){
+clearInterval(slideInterval);
 finalScene();
 return;
 }
 showSlide(current);
-},5000);
 }
 
+/* HEART */
 function startHearts(speed){
 setInterval(()=>{
 let heart=document.createElement("div");
@@ -190,10 +225,46 @@ setTimeout(()=>heart.remove(),7000);
 },speed);
 }
 
+/* FINAL */
 function finalScene(){
 document.getElementById("final").style.display="block";
-startHearts(100);
+startHearts(120);
 }
+
+/* MUSIC */
+const music=document.getElementById("music");
+const tracks=[
+{src:"song1.mp3",loop:false},
+{src:"song2.mp3",loop:false},
+{src:"song3.mp3",loop:true}
+];
+let trackIndex=0;
+
+function startMusic(){
+playTrack(trackIndex);
+}
+
+function playTrack(i){
+music.src=tracks[i].src;
+music.loop=tracks[i].loop;
+
+music.addEventListener("loadedmetadata",function setStart(){
+if(i===2){
+music.currentTime=30;
+}
+music.removeEventListener("loadedmetadata",setStart);
+});
+
+music.play().catch(()=>{});
+}
+
+music.addEventListener("ended",()=>{
+trackIndex++;
+if(trackIndex<tracks.length){
+playTrack(trackIndex);
+}
+});
+
 </script>
 
 </body>
