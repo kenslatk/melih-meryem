@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sevgililer Günü Sürprizi 💖</title>
+<style>
+body {
+    margin:0; padding:0; background:#ffccd5;
+    display:flex; justify-content:center; align-items:center;
+    min-height:100vh; font-family:'Arial',sans-serif;
+    flex-direction: column;
+}
+#slideshow-container {
+    width: 80%;
+    max-width: 800px;
+    margin: auto;
+    text-align: center;
+}
+#slideshow {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    overflow: hidden;
+}
+.slide {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.slide.active { opacity:1; }
+.slide img {
+    max-width: 100%;
+    max-height: 600px;
+    width: auto;
+    height: auto;
+    display: block;
+}
+#message {
+    margin-top: 10px;
+    color: #fff;
+    font-size: 1.5em;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+.heart {
+    position:absolute; width:30px; height:30px;
+    background:url('data:image/svg+xml;utf8,<svg viewBox="0 0 32 29.6" xmlns="http://www.w3.org/2000/svg"><path d="M23.6 0c-2.9 0-5.4 1.8-6.6 4.4C15.8 1.8 13.3 0 10.4 0 4.7 0 0 4.7 0 10.4c0 5.5 5.5 11 13.8 18.3L16 29.6l2.2-1.0C26.5 21.4 32 15.9 32 10.4 32 4.7 27.3 0 23.6 0z" fill="%23ff4d6d"/></svg>') no-repeat center;
+    background-size:contain; pointer-events:none; animation:floatUp 2s ease-out forwards;
+}
+@keyframes floatUp {0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-150px) scale(1.5);opacity:0;}}
+</style>
+</head>
+<body>
+
+<div id="slideshow-container">
+    <div id="slideshow"></div>
+    <div id="message"></div>
+</div>
+
+<audio id="bgMusic" controls></audio>
+
+<script>
+// --- Slaytlar ve mesajlar ---
+const slides = [];
+for(let i=1;i<=10;i++){
+    const slide = document.createElement('div');
+    slide.classList.add('slide');
+    const img = document.createElement('img');
+    img.src = `foto${i}.jpg`;
+    slide.appendChild(img);
+    document.getElementById('slideshow').appendChild(slide);
+    slides.push(slide);
+}
+
+const messages = [
+"Seni her şeyden çok seviyorum 💖",
+"Seninle her an bir masal gibi...",
+"Gülüşün dünyamı aydınlatıyor ✨",
+"Kalbim sadece senin için atıyor ❤️",
+"Sen benim en güzel rastlantımsın 💕",
+"Sana her gün aşık oluyorum 😘",
+"Seninle her şey daha güzel 💞",
+"Hayatımın anlamısın 💓",
+"Seninle her an bir macera 🌹",
+"Sonsuza kadar seninle olmak istiyorum 💘"
+];
+
+let current=0;
+const messageEl=document.getElementById('message');
+function showSlide(i){
+    slides.forEach((s,j)=> s.classList.toggle('active', j===i));
+    messageEl.textContent = messages[i];
+}
+showSlide(current);
+setInterval(()=> { current=(current+1)%slides.length; showSlide(current); },4000);
+
+// --- Kalp animasyonu ---
+function createHeart(x,y){
+    const h = document.createElement('div');
+    h.classList.add('heart');
+    h.style.left = (x-15)+'px';
+    h.style.top = (y-15)+'px';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),2000);
+}
+document.getElementById('slideshow').addEventListener('click', e=>{
+    createHeart(e.clientX, e.clientY);
+});
+
+// --- Kalp yağmuru ---
+function heartRain(){
+    for(let i=0;i<15;i++){
+        const x = Math.random()*window.innerWidth;
+        const y = Math.random()*window.innerHeight;
+        createHeart(x,y);
+    }
+}
+setInterval(heartRain,1000);
+
+// --- Müzik kontrolü ---
+const tracks = [
+    {src:"song1.mp3", loop:false},
+    {src:"song2.mp3", loop:false},
+    {src:"song3.mp3", loop:true}
+];
+let currentTrack=0;
+const bgMusic = document.getElementById('bgMusic');
+
+function playTrack(i){
+    bgMusic.src = tracks[i].src;
+    bgMusic.loop = tracks[i].loop;
+    bgMusic.play().catch(()=>{}); // autoplay engeli için catch
+}
+
+// İlk kullanıcı etkileşimiyle müziği başlat
+document.body.addEventListener('click', ()=> { playTrack(currentTrack); }, {once:true});
+
+// Track bittiğinde sıradaki çalsın
+bgMusic.addEventListener('ended', ()=>{
+    if(currentTrack < tracks.length-1){
+        currentTrack++;
+        playTrack(currentTrack);
+    }
+});
+</script>
+
+</body>
+</html>
