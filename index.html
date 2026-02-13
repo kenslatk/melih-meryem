@@ -11,13 +11,22 @@ margin:0;
 font-family:Arial, sans-serif;
 overflow:hidden;
 color:white;
-background:url("background.jpg") no-repeat center center fixed;
+}
+
+/* ARKA PLAN */
+#bg{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:url("background.png") no-repeat center center;
 background-size:cover;
+z-index:-2;
 }
 
 /* KARARTMA */
-body::before{
-content:"";
+#overlay{
 position:fixed;
 width:100%;
 height:100%;
@@ -109,6 +118,9 @@ text-shadow:0 0 30px red;
 </head>
 <body>
 
+<div id="bg"></div>
+<div id="overlay"></div>
+
 <div id="intro">
 <h1>
 İLK SEVGİLİLER GÜNÜMÜZ KUTLU OLSUN ❤️<br><br>
@@ -124,34 +136,9 @@ Nice birlikte geçireceğimiz günlere…
 <audio id="music"></audio>
 
 <script>
-
 const totalPhotos = 20;
 const slideshow = document.getElementById("slideshow");
 
-const messages = [
-"Seninle başlayan her an başka güzel...",
-"Yanında her şey daha kolay ❤️",
-"Birlikte gülmek en sevdiğim şey.",
-"Elini tutmak huzur demek.",
-"İyi ki varsın.",
-"Kalbim seninle tamam.",
-"Hayatımın en güzel parçasısın.",
-"Yanında kendim olabiliyorum.",
-"Güvenmek böyle bir şeymiş.",
-"Birlikte güçlüyüz.",
-"Birlikte mutluyuz.",
-"Yan yana olmak yetiyor.",
-"Sen benim en güzel alışkanlığımsın.",
-"Kalbim hep seninle.",
-"Biz bir takımız.",
-"Omuz omuza her şey mümkün.",
-"Gözlerine bakmak bile yeter.",
-"En huzurlu yer senin yanın.",
-"İyi ki biz olduk.",
-"Ve hep öyle kalacağız ❤️"
-];
-
-/* FOTO OLUŞTUR */
 for(let i=1;i<=totalPhotos;i++){
 let slide=document.createElement("div");
 slide.className="slide";
@@ -159,26 +146,19 @@ slide.className="slide";
 let img=document.createElement("img");
 img.src="foto"+i+".jpg";
 
-let text=document.createElement("div");
-text.className="message";
-text.textContent=messages[i-1] || "";
-
 slide.appendChild(img);
-slide.appendChild(text);
 slideshow.appendChild(slide);
 }
 
 const slides=document.querySelectorAll(".slide");
 let current=0;
 
-/* INTRO */
 setTimeout(()=>{
 document.getElementById("intro").style.display="none";
 slideshow.style.display="block";
 showSlide(0);
 setTimeout(startSlideshow,5000);
 startHearts(600);
-startMusic();
 },20000);
 
 function showSlide(index){
@@ -197,7 +177,6 @@ showSlide(current);
 },5000);
 }
 
-/* KALP */
 function startHearts(speed){
 setInterval(()=>{
 let heart=document.createElement("div");
@@ -211,45 +190,10 @@ setTimeout(()=>heart.remove(),7000);
 },speed);
 }
 
-/* FINAL */
 function finalScene(){
 document.getElementById("final").style.display="block";
 startHearts(100);
 }
-
-/* MÜZİK */
-const music=document.getElementById("music");
-const tracks=[
-{src:"song1.mp3",loop:false},
-{src:"song2.mp3",loop:false},
-{src:"song3.mp3",loop:true}
-];
-let trackIndex=0;
-
-function startMusic(){
-playTrack(trackIndex);
-}
-
-function playTrack(i){
-music.src=tracks[i].src;
-music.loop=tracks[i].loop;
-
-music.addEventListener("loadedmetadata",function setStart(){
-if(i===2){
-music.currentTime=30;
-}
-music.removeEventListener("loadedmetadata",setStart);
-});
-
-music.play();
-}
-
-music.addEventListener("ended",()=>{
-trackIndex++;
-if(trackIndex<tracks.length){
-playTrack(trackIndex);
-}
-});
 </script>
 
 </body>
