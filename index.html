@@ -16,17 +16,7 @@ body{
     font-family:Arial, sans-serif;
     height:100vh;
     overflow:hidden;
-    background:url("background.jpg") center center no-repeat fixed;
-    background-size:cover;
-}
-
-/* KARARTMA + BLUR */
-.overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.65);
-    backdrop-filter:blur(6px);
-    z-index:1;
+    background:black;
 }
 
 /* INTRO */
@@ -39,8 +29,9 @@ body{
     align-items:center;
     text-align:center;
     color:white;
-    z-index:3;
+    z-index:10;
     padding:20px;
+    background:black;
 }
 
 #intro h1{
@@ -54,55 +45,85 @@ body{
     line-height:1.6em;
 }
 
-/* SLIDER */
+/* SLIDESHOW */
 #slideshow{
     position:fixed;
     inset:0;
     display:none;
     justify-content:center;
     align-items:center;
-    z-index:3;
+    z-index:5;
 }
 
 .slide{
     position:absolute;
     inset:0;
-    display:none;
+    opacity:0;
+    transition:opacity 1.5s ease;
 }
 
 .slide.active{
-    display:block;
+    opacity:1;
 }
 
-.slide img{
+/* BLUR ARKA PLAN */
+.bg-blur{
     position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%, -50%);
-    
-    max-width:100vw;
-    max-height:100vh;
+    inset:0;
+    background-size:cover;
+    background-position:center;
+    filter:blur(35px) brightness(0.6);
+    transform:scale(1.2);
+}
 
+/* FOTO ÇERÇEVESİ */
+.photo-frame{
+    position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.photo-frame img{
+    max-width:90vw;
+    max-height:85vh;
     width:auto;
     height:auto;
+    object-fit:contain;
+    box-shadow:0 0 40px rgba(0,0,0,0.8);
+    border-radius:12px;
 }
 
-/* MESAJ */
+/* Mesaj */
 #message{
     position:absolute;
-    bottom:40px;
+    bottom:50px;
     width:100%;
     text-align:center;
     color:white;
-    font-size:1.6em;
-    text-shadow:0 0 10px black;
+    font-size:1.8em;
+    text-shadow:0 0 15px black;
+}
+
+/* Kalpler */
+.heart{
+    position:fixed;
+    bottom:-20px;
+    font-size:20px;
+    color:#ff4d6d;
+    animation:floatUp 6s linear infinite;
+    z-index:2;
+}
+
+@keyframes floatUp{
+    0%{ transform:translateY(0) scale(1); opacity:1;}
+    100%{ transform:translateY(-110vh) scale(1.8); opacity:0;}
 }
 </style>
 </head>
 
 <body>
-
-<div class="overlay"></div>
 
 <div id="intro">
     <h1>İLK SEVGİLİLER GÜNÜMÜZ KUTLU OLSUN ❤️</h1>
@@ -110,7 +131,6 @@ body{
         Seninle yan yana olmak bana huzur veriyor.
         Sana güvenmek, yanında rahat olmak,
         birlikte hayatı paylaşabilmek…
-        Bunların hepsi benim için çok değerli.
         Umarım hep yan yana,
         hep güvenle,
         hep huzurla devam ederiz. 💖
@@ -126,14 +146,14 @@ body{
 
 <script>
 
-/* 20 SANİYE GİRİŞ */
+/* INTRO 20 SANİYE */
 setTimeout(()=>{
     document.getElementById("intro").style.display="none";
     document.getElementById("slideshow").style.display="flex";
 },20000);
 
 
-/* FOTOĞRAFLAR */
+/* FOTO YÜKLEME */
 const slidesContainer = document.getElementById("slides");
 const slides = [];
 
@@ -141,10 +161,23 @@ for(let i=1;i<=20;i++){
     const div = document.createElement("div");
     div.classList.add("slide");
 
+    /* BLUR BACKGROUND */
+    const blur = document.createElement("div");
+    blur.classList.add("bg-blur");
+    blur.style.backgroundImage = `url(foto${i}.jpg)`;
+
+    /* NET FOTO */
+    const frame = document.createElement("div");
+    frame.classList.add("photo-frame");
+
     const img = document.createElement("img");
     img.src = `foto${i}.jpg`;
 
-    div.appendChild(img);
+    frame.appendChild(img);
+
+    div.appendChild(blur);
+    div.appendChild(frame);
+
     slidesContainer.appendChild(div);
     slides.push(div);
 }
@@ -175,37 +208,45 @@ const messages = [
 let current = 0;
 const messageEl = document.getElementById("message");
 
+function typeWriter(text){
+    messageEl.textContent="";
+    let i=0;
+    let typing=setInterval(()=>{
+        messageEl.textContent+=text[i];
+        i++;
+        if(i>=text.length) clearInterval(typing);
+    },40);
+}
+
 function showSlide(index){
-    slides.forEach((s,i)=>{
-        s.classList.remove("active");
-        if(i===index) s.classList.add("active");
-    });
-    messageEl.textContent = messages[index];
+    slides.forEach(s=>s.classList.remove("active"));
+    slides[index].classList.add("active");
+    typeWriter(messages[index]);
 }
 
 showSlide(current);
 
 setInterval(()=>{
     if(document.getElementById("slideshow").style.display==="flex"){
-        current = (current+1)%slides.length;
+        current=(current+1)%slides.length;
         showSlide(current);
     }
-},4000);
+},5000);
 
 
 /* MÜZİK */
-const tracks = [
-    {src:"song1.mp3", loop:false},
-    {src:"song2.mp3", loop:false},
-    {src:"song3.mp3", loop:true}
+const tracks=[
+    {src:"song1.mp3",loop:false},
+    {src:"song2.mp3",loop:false},
+    {src:"song3.mp3",loop:true}
 ];
 
-let trackIndex = 0;
-const bgMusic = document.getElementById("bgMusic");
+let trackIndex=0;
+const bgMusic=document.getElementById("bgMusic");
 
 function playTrack(i){
-    bgMusic.src = tracks[i].src;
-    bgMusic.loop = tracks[i].loop;
+    bgMusic.src=tracks[i].src;
+    bgMusic.loop=tracks[i].loop;
     bgMusic.play();
 }
 
@@ -214,11 +255,23 @@ document.body.addEventListener("click",()=>{
 },{once:true});
 
 bgMusic.addEventListener("ended",()=>{
-    if(trackIndex < tracks.length-1){
+    if(trackIndex<tracks.length-1){
         trackIndex++;
         playTrack(trackIndex);
     }
 });
+
+
+/* KALP OLUŞTUR */
+setInterval(()=>{
+    const heart=document.createElement("div");
+    heart.classList.add("heart");
+    heart.style.left=Math.random()*100+"vw";
+    heart.textContent="❤";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),6000);
+},800);
+
 </script>
 
 </body>
