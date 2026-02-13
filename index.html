@@ -1,149 +1,3 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>İlk Sevgililer Günümüz ❤️</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    font-family:Arial, sans-serif;
-    height:100vh;
-    overflow:hidden;
-    background:black;
-}
-
-/* INTRO */
-#intro{
-    position:fixed;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    color:white;
-    z-index:10;
-    padding:20px;
-    background:black;
-}
-
-#intro h1{
-    font-size:3em;
-    margin-bottom:20px;
-}
-
-#intro p{
-    max-width:800px;
-    font-size:1.4em;
-    line-height:1.6em;
-}
-
-/* SLIDESHOW */
-#slideshow{
-    position:fixed;
-    inset:0;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:5;
-}
-
-.slide{
-    position:absolute;
-    inset:0;
-    opacity:0;
-    transition:opacity 1.5s ease;
-}
-
-.slide.active{
-    opacity:1;
-}
-
-/* BLUR ARKA PLAN */
-.bg-blur{
-    position:absolute;
-    inset:0;
-    background-size:cover;
-    background-position:center;
-    filter:blur(35px) brightness(0.6);
-    transform:scale(1.2);
-}
-
-/* FOTO ÇERÇEVESİ */
-.photo-frame{
-    position:absolute;
-    inset:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.photo-frame img{
-    max-width:90vw;
-    max-height:85vh;
-    width:auto;
-    height:auto;
-    object-fit:contain;
-    box-shadow:0 0 40px rgba(0,0,0,0.8);
-    border-radius:12px;
-}
-
-/* Mesaj */
-#message{
-    position:absolute;
-    bottom:50px;
-    width:100%;
-    text-align:center;
-    color:white;
-    font-size:1.8em;
-    text-shadow:0 0 15px black;
-}
-
-/* Kalpler */
-.heart{
-    position:fixed;
-    bottom:-20px;
-    font-size:20px;
-    color:#ff4d6d;
-    animation:floatUp 6s linear infinite;
-    z-index:2;
-}
-
-@keyframes floatUp{
-    0%{ transform:translateY(0) scale(1); opacity:1;}
-    100%{ transform:translateY(-110vh) scale(1.8); opacity:0;}
-}
-</style>
-</head>
-
-<body>
-
-<div id="intro">
-    <h1>İLK SEVGİLİLER GÜNÜMÜZ KUTLU OLSUN ❤️</h1>
-    <p>
-        Seninle yan yana olmak bana huzur veriyor.
-        Sana güvenmek, yanında rahat olmak,
-        birlikte hayatı paylaşabilmek…
-        Umarım hep yan yana,
-        hep güvenle,
-        hep huzurla devam ederiz. 💖
-    </p>
-</div>
-
-<div id="slideshow">
-    <div id="slides"></div>
-    <div id="message"></div>
-</div>
-
-<audio id="bgMusic" controls></audio>
-
 <script>
 
 /* INTRO 20 SANİYE */
@@ -161,12 +15,10 @@ for(let i=1;i<=20;i++){
     const div = document.createElement("div");
     div.classList.add("slide");
 
-    /* BLUR BACKGROUND */
     const blur = document.createElement("div");
     blur.classList.add("bg-blur");
     blur.style.backgroundImage = `url(foto${i}.jpg)`;
 
-    /* NET FOTO */
     const frame = document.createElement("div");
     frame.classList.add("photo-frame");
 
@@ -174,7 +26,6 @@ for(let i=1;i<=20;i++){
     img.src = `foto${i}.jpg`;
 
     frame.appendChild(img);
-
     div.appendChild(blur);
     div.appendChild(frame);
 
@@ -207,7 +58,9 @@ const messages = [
 
 let current = 0;
 const messageEl = document.getElementById("message");
+let heartInterval;
 
+/* Yazı efekti */
 function typeWriter(text){
     messageEl.textContent="";
     let i=0;
@@ -222,6 +75,11 @@ function showSlide(index){
     slides.forEach(s=>s.classList.remove("active"));
     slides[index].classList.add("active");
     typeWriter(messages[index]);
+
+    /* SON SLAYT KONTROL */
+    if(index === slides.length-1){
+        startFinale();
+    }
 }
 
 showSlide(current);
@@ -234,7 +92,65 @@ setInterval(()=>{
 },5000);
 
 
-/* MÜZİK */
+/* =======================
+   KALP YAĞMURU
+======================= */
+
+function startHearts(speed=500){
+    clearInterval(heartInterval);
+    heartInterval = setInterval(()=>{
+        const heart=document.createElement("div");
+        heart.classList.add("heart");
+        heart.style.left=Math.random()*100+"vw";
+        heart.style.animationDuration = (4 + Math.random()*3) + "s";
+        heart.style.fontSize = (18 + Math.random()*25) + "px";
+        heart.textContent="❤";
+        document.body.appendChild(heart);
+        setTimeout(()=>heart.remove(),7000);
+    },speed);
+}
+
+/* NORMAL YOĞUNLUK */
+startHearts(500);
+
+
+/* =======================
+   FİNAL PATLAMASI
+======================= */
+
+function startFinale(){
+
+    /* Kalp hızını arttır */
+    startHearts(150);
+
+    /* Büyük yazı oluştur */
+    const finalText=document.createElement("div");
+    finalText.innerHTML="SENİ SEVİYORUM ❤️";
+    finalText.style.position="fixed";
+    finalText.style.top="50%";
+    finalText.style.left="50%";
+    finalText.style.transform="translate(-50%, -50%) scale(0.5)";
+    finalText.style.color="white";
+    finalText.style.fontSize="4em";
+    finalText.style.fontWeight="bold";
+    finalText.style.textShadow="0 0 40px red";
+    finalText.style.zIndex="99999";
+    finalText.style.opacity="0";
+    finalText.style.transition="all 2s ease";
+
+    document.body.appendChild(finalText);
+
+    setTimeout(()=>{
+        finalText.style.opacity="1";
+        finalText.style.transform="translate(-50%, -50%) scale(1)";
+    },200);
+}
+
+
+/* =======================
+   MÜZİK
+======================= */
+
 const tracks=[
     {src:"song1.mp3",loop:false},
     {src:"song2.mp3",loop:false},
@@ -261,18 +177,4 @@ bgMusic.addEventListener("ended",()=>{
     }
 });
 
-
-/* KALP OLUŞTUR */
-setInterval(()=>{
-    const heart=document.createElement("div");
-    heart.classList.add("heart");
-    heart.style.left=Math.random()*100+"vw";
-    heart.textContent="❤";
-    document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),6000);
-},800);
-
 </script>
-
-</body>
-</html>
