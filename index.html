@@ -3,147 +3,197 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sevgililer Günü Sürprizi 💖</title>
+<title>Sevgililer Günü 💖</title>
+
 <style>
 body {
-    margin:0; padding:0; background:#ffccd5;
-    display:flex; justify-content:center; align-items:center;
-    min-height:100vh; font-family:'Arial',sans-serif;
-    flex-direction: column;
-    overflow: hidden;
+    margin:0;
+    padding:0;
+    font-family: Arial, sans-serif;
+    background: url("background.png") no-repeat center center fixed;
+    background-size: cover;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    min-height:100vh;
 }
-#intro {
-    position: absolute;
-    top:0; left:0; width:100%; height:100%;
-    background:#ffccd5;
-    display:flex; justify-content:center; align-items:center;
-    flex-direction: column;
+
+/* KARARTMA EFEKTİ */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.55);
+    z-index:-1;
+}
+
+#intro{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
     text-align:center;
-    color:#fff;
-    z-index:10;
+    color:white;
+    background:rgba(0,0,0,0.6);
 }
-#intro h1 {
-    font-size:3em; margin:0 0 10px 0;
-    text-shadow:2px 2px 5px rgba(0,0,0,0.5);
+
+#intro h1{
+    font-size:3em;
+    margin-bottom:20px;
 }
-#intro p {
-    font-size:1.5em; text-shadow:2px 2px 5px rgba(0,0,0,0.5);
+
+#intro p{
+    font-size:1.4em;
+    max-width:700px;
 }
-#slideshow-container { width: 80%; max-width: 900px; margin: 20px auto; text-align:center; display:none; }
-#slideshow { position: relative; width: 100%; display: flex; justify-content:center; align-items:center; min-height:300px; overflow:hidden; }
-.slide { position: absolute; opacity: 0; transition: opacity 1s ease-in-out; display:flex; justify-content:center; align-items:center; }
-.slide.active { opacity:1; }
-.slide img { max-width:100%; max-height:80vh; width:auto; height:auto; display:block; margin:auto; }
-#message { margin-top:10px; color:#fff; font-size:1.5em; text-shadow:2px 2px 5px rgba(0,0,0,0.5); }
-.heart { position:absolute; width:30px; height:30px; background:url('data:image/svg+xml;utf8,<svg viewBox="0 0 32 29.6" xmlns="http://www.w3.org/2000/svg"><path d="M23.6 0c-2.9 0-5.4 1.8-6.6 4.4C15.8 1.8 13.3 0 10.4 0 4.7 0 0 4.7 0 10.4c0 5.5 5.5 11 13.8 18.3L16 29.6l2.2-1.0C26.5 21.4 32 15.9 32 10.4 32 4.7 27.3 0 23.6 0z" fill="%23ff4d6d"/></svg>') no-repeat center; background-size:contain; pointer-events:none; animation:floatUp 2s ease-out forwards; }
-@keyframes floatUp {0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-150px) scale(1.5);opacity:0;}}
+
+#slideshow-container{
+    display:none;
+    width:100%;
+    text-align:center;
+}
+
+.slide{
+    display:none;
+}
+
+.slide.active{
+    display:block;
+}
+
+.slide img{
+    width:100%;
+    height:100vh;
+    object-fit:contain; /* ASLA KESMEZ */
+}
+
+#message{
+    color:white;
+    font-size:1.6em;
+    margin-top:15px;
+}
 </style>
 </head>
+
 <body>
 
 <div id="intro">
-    <h1>İLK SEVGİLİLER GÜNÜMÜZ KUTLU OLSUN 💖</h1>
-    <p>Seninle her an rahat, güvenli ve mutlu hissediyorum. Birlikte olduğumuz her an hayat daha güzel. Sonsuza kadar hep yanımda olmanı diliyorum. 💕</p>
+    <h1>İLK SEVGİLİLER GÜNÜMÜZ KUTLU OLSUN ❤️</h1>
+    <p>
+        Seninle yan yana olmak bana huzur veriyor.
+        Sana güvenmek, yanında rahat olmak,
+        hayatı birlikte paylaşmak…
+        Bunların hepsi benim için çok değerli.
+        Umarım hep böyle yan yana,
+        hep birbirimize güvenerek,
+        hep rahat ve mutlu bir şekilde devam ederiz. 💖
+    </p>
 </div>
 
 <div id="slideshow-container">
-    <div id="slideshow"></div>
+    <div id="slides"></div>
     <div id="message"></div>
 </div>
 
 <audio id="bgMusic" controls></audio>
 
 <script>
-// --- Intro 20 saniye ---
-setTimeout(()=>{
-    document.getElementById('intro').style.display='none';
-    document.getElementById('slideshow-container').style.display='block';
-    showSlide(current);
-},20000); // 20 saniye
 
-// --- Slaytlar ve mesajlar ---
+/* 20 SANİYE GİRİŞ */
+setTimeout(()=>{
+    document.getElementById("intro").style.display="none";
+    document.getElementById("slideshow-container").style.display="block";
+},20000);
+
+
+/* FOTOĞRAFLAR */
+const slidesContainer = document.getElementById("slides");
 const slides = [];
-for(let i=1;i<=20;i++){   
-    const slide = document.createElement('div');
-    slide.classList.add('slide');
-    const img = document.createElement('img');
+
+for(let i=1;i<=20;i++){
+    const div = document.createElement("div");
+    div.classList.add("slide");
+
+    const img = document.createElement("img");
     img.src = `foto${i}.jpg`;
-    slide.appendChild(img);
-    document.getElementById('slideshow').appendChild(slide);
-    slides.push(slide);
+
+    div.appendChild(img);
+    slidesContainer.appendChild(div);
+    slides.push(div);
 }
 
 const messages = [
 "Seni her şeyden çok seviyorum 💖",
-"Seninle her an bir masal gibi...",
-"Gülüşün dünyamı aydınlatıyor ✨",
-"Kalbim sadece senin için atıyor ❤️",
-"Sen benim en güzel rastlantımsın 💕",
-"Sana her gün aşık oluyorum 😘",
+"Seninle her an daha anlamlı...",
+"Gülüşün içimi ısıtıyor ✨",
+"Yanında huzur buluyorum ❤️",
+"En güzel rastlantımsın 💕",
+"Sana her gün yeniden aşık oluyorum 😘",
 "Seninle her şey daha güzel 💞",
-"Hayatımın anlamısın 💓",
-"Seninle her an bir macera 🌹",
-"Sonsuza kadar seninle olmak istiyorum 💘",
-"Seninle her günüm özel 💝",
+"Hayatımın en değerli parçasısın 💓",
+"Yan yana olmak en güzeli 🌹",
+"Sonsuza kadar seninleyim 💘",
+"Her günüm seninle özel 💝",
 "Kalbim sana ait ❤️",
-"Gözlerin en parlak yıldız ✨",
-"Sen benim ilham kaynağımsın 💕",
-"Birlikte olduğumuz her an değerli 💖",
-"Aşkımız sonsuz 💞",
-"Sana her zaman güveniyorum 💓",
-"Seninle yaşamak en büyük mutluluk 🌹",
-"Kalbim hep seninle atıyor 💘",
-"Sonsuza kadar seni seveceğim 💖"
+"Birlikte güçlüyüz ✨",
+"Güvenmek bu kadar güzelmiş 💕",
+"Yanında kendim olabiliyorum 💖",
+"Rahat ve huzurlu hissediyorum 💞",
+"Aşkımız hep büyüsün 💓",
+"Sen benim evimsin 🌹",
+"Kalbim hep sana dönük 💘",
+"Hep yan yana kalalım 💖"
 ];
 
-let current=0;
-const messageEl=document.getElementById('message');
-function showSlide(i){
-    slides.forEach((s,j)=> s.classList.toggle('active', j===i));
-    messageEl.textContent = messages[i];
-}
-setInterval(()=> { if(document.getElementById('slideshow-container').style.display==='block'){ current=(current+1)%slides.length; showSlide(current); } },4000);
+let current = 0;
+const messageEl = document.getElementById("message");
 
-// --- Kalp animasyonu ---
-function createHeart(x,y){
-    const h = document.createElement('div');
-    h.classList.add('heart');
-    h.style.left = (x-15)+'px';
-    h.style.top = (y-15)+'px';
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),2000);
+function showSlide(index){
+    slides.forEach((s,i)=>{
+        s.classList.remove("active");
+        if(i===index) s.classList.add("active");
+    });
+    messageEl.textContent = messages[index];
 }
-document.getElementById('slideshow').addEventListener('click', e=>{
-    createHeart(e.clientX, e.clientY);
-});
 
-// --- Kalp yağmuru ---
-function heartRain(){
-    for(let i=0;i<15;i++){
-        const x = Math.random()*window.innerWidth;
-        const y = Math.random()*window.innerHeight;
-        createHeart(x,y);
+showSlide(current);
+
+setInterval(()=>{
+    if(document.getElementById("slideshow-container").style.display==="block"){
+        current = (current+1)%slides.length;
+        showSlide(current);
     }
-}
-setInterval(heartRain,1000);
+},4000);
 
-// --- Müzik kontrolü ---
+
+/* MÜZİK */
 const tracks = [
     {src:"song1.mp3", loop:false},
     {src:"song2.mp3", loop:false},
     {src:"song3.mp3", loop:true}
 ];
-let currentTrack=0;
-const bgMusic = document.getElementById('bgMusic');
+
+let trackIndex = 0;
+const bgMusic = document.getElementById("bgMusic");
+
 function playTrack(i){
     bgMusic.src = tracks[i].src;
     bgMusic.loop = tracks[i].loop;
-    bgMusic.play().catch(()=>{});
+    bgMusic.play();
 }
-// İlk kullanıcı etkileşimiyle başlat
-document.body.addEventListener('click', ()=> { playTrack(currentTrack); }, {once:true});
-bgMusic.addEventListener('ended', ()=>{
-    if(currentTrack < tracks.length-1){ currentTrack++; playTrack(currentTrack); }
+
+document.body.addEventListener("click",()=>{
+    playTrack(trackIndex);
+},{once:true});
+
+bgMusic.addEventListener("ended",()=>{
+    if(trackIndex < tracks.length-1){
+        trackIndex++;
+        playTrack(trackIndex);
+    }
 });
 </script>
 
