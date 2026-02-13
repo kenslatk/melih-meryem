@@ -6,258 +6,238 @@
 <title>İlk Sevgililer Günümüz ❤️</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:Arial,sans-serif;height:100vh;overflow:hidden;background:black;}
+body{
+margin:0;
+background:#000;
+color:white;
+font-family:Arial, sans-serif;
+overflow:hidden;
+text-align:center;
+}
 
 /* INTRO */
 #intro{
-position:fixed;inset:0;display:flex;flex-direction:column;
-justify-content:center;align-items:center;text-align:center;
-color:white;z-index:10;padding:20px;background:black;
-}
-#intro h1{font-size:3em;margin-bottom:20px;}
-#intro p{max-width:800px;font-size:1.4em;line-height:1.6em;}
-
-/* SLIDES */
-#slideshow{position:fixed;inset:0;display:none;justify-content:center;align-items:center;z-index:5;}
-.slide{position:absolute;inset:0;opacity:0;transition:opacity 1.5s ease;}
-.slide.active{opacity:1;}
-
-.bg-blur{
-position:absolute;inset:0;background-size:cover;background-position:center;
-filter:blur(35px) brightness(0.6);transform:scale(1.2);
+position:fixed;
+width:100%;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:40px;
+background:black;
+z-index:5;
 }
 
-.photo-frame{
-position:absolute;inset:0;display:flex;
-justify-content:center;align-items:center;
+#intro h1{
+font-size:28px;
+max-width:800px;
 }
 
-.photo-frame img{
+/* SLIDESHOW */
+#slideshow{
+display:none;
+width:100%;
+height:100vh;
+position:relative;
+}
+
+.slide{
+position:absolute;
+width:100%;
+height:100%;
+display:none;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+}
+
+.slide.active{
+display:flex;
+}
+
+.slide img{
 max-width:90vw;
-max-height:85vh;
-width:auto;
-height:auto;
-object-fit:contain;
-box-shadow:0 0 40px rgba(0,0,0,0.8);
-border-radius:12px;
+max-height:75vh;
+object-fit:contain; /* FOTO KESİLMEZ */
+border-radius:15px;
 }
 
-/* MESSAGE */
-#message{
-position:absolute;bottom:50px;width:100%;
-text-align:center;color:white;font-size:1.8em;
-text-shadow:0 0 15px black;
+.message{
+margin-top:20px;
+font-size:20px;
+padding:0 20px;
 }
 
-/* HEARTS */
+/* KALP */
 .heart{
 position:fixed;
 bottom:-20px;
-z-index:9999;
+color:#ff4d6d;
+animation:rise linear forwards;
 pointer-events:none;
-animation:floatUp linear forwards;
 }
 
-@keyframes floatUp{
-0%{transform:translateY(0) scale(1);opacity:1;}
-100%{transform:translateY(-110vh) scale(1.8);opacity:0;}
+@keyframes rise{
+0%{transform:translateY(0);opacity:1;}
+100%{transform:translateY(-110vh);opacity:0;}
+}
+
+/* FINAL */
+#final{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:50px;
+display:none;
+z-index:10;
 }
 </style>
 </head>
-
 <body>
 
 <div id="intro">
-<h1>İLK SEVGİLİLER GÜNÜMÜZ KUTLU OLSUN ❤️</h1>
-<p>
-Seninle yan yana olmak bana huzur veriyor.
-Sana güvenmek, yanında rahat olmak,
-birlikte hayatı paylaşabilmek…
-Umarım hep yan yana,
-hep güvenle,
-hep huzurla devam ederiz. 💖
-</p>
+<h1>
+İLK SEVGİLİLER GÜNÜMÜZ KUTLU OLSUN ❤️<br><br>
+Seninle yan yana olmak, güvenmek, rahat olmak…
+Bunların hepsi seninle mümkün.<br><br>
+Nice birlikte geçireceğimiz günlere…
+</h1>
 </div>
 
-<div id="slideshow">
-<div id="slides"></div>
-<div id="message"></div>
-</div>
+<div id="slideshow"></div>
 
-<audio id="bgMusic" controls></audio>
+<div id="final">SENİ SEVİYORUM ❤️</div>
+
+<audio id="music"></audio>
 
 <script>
 
-/* INTRO */
-setTimeout(()=>{
-document.getElementById("intro").style.display="none";
-document.getElementById("slideshow").style.display="flex";
-startHearts(600);
-},20000);
-
-/* FOTO YÜKLEME */
-const slidesContainer=document.getElementById("slides");
-const slides=[];
-
-for(let i=1;i<=20;i++){
-const div=document.createElement("div");
-div.classList.add("slide");
-
-const blur=document.createElement("div");
-blur.classList.add("bg-blur");
-blur.style.backgroundImage=`url(foto${i}.jpg)`;
-
-const frame=document.createElement("div");
-frame.classList.add("photo-frame");
-
-const img=document.createElement("img");
-img.src=`foto${i}.jpg`;
-
-frame.appendChild(img);
-div.appendChild(blur);
-div.appendChild(frame);
-
-slidesContainer.appendChild(div);
-slides.push(div);
-}
-
-const messages=[
-"Seni her şeyden çok seviyorum 💖",
-"Yanında huzur buluyorum ❤️",
-"Seninle hayat daha anlamlı ✨",
-"Gülüşün içimi ısıtıyor 💕",
-"Birlikte güçlüyüz 💞",
-"Yanında kendim olabiliyorum 💓",
-"Sana güvenmek çok güzel 🌹",
-"Rahat hissetmek paha biçilemez 💘",
-"Hayatımın en güzel parçasısın 💝",
-"Sonsuza kadar seninleyim 💖",
-"Her günüm seninle özel 💕",
-"Kalbim sana ait ❤️",
-"Birlikte her şeyi aşarız 💞",
-"Sen benim huzurumsun 💓",
-"Yan yana olmak en güzeli 🌹",
-"Gözlerine bakmak bile yetiyor 💘",
-"Aşkımız hep büyüsün 💖",
-"Sen benim evimsin 💕",
-"Kalbim hep sana dönük ❤️",
-"Hep yan yana kalalım 💞"
+const totalPhotos = 20;
+const slideshow = document.getElementById("slideshow");
+const messages = [
+"Seninle başlayan her an başka güzel...",
+"Yanında her şey daha kolay ❤️",
+"Birlikte gülmek en sevdiğim şey.",
+"Elini tutmak huzur demek.",
+"İyi ki varsın.",
+"Kalbim seninle tamam.",
+"Hayatımın en güzel parçasısın.",
+"Yanında kendim olabiliyorum.",
+"Güvenmek böyle bir şeymiş.",
+"Birlikte güçlüyüz.",
+"Birlikte mutluyuz.",
+"Yan yana olmak yetiyor.",
+"Sen benim en güzel alışkanlığımsın.",
+"Kalbim hep seninle.",
+"Biz bir takımız.",
+"Omuz omuza her şey mümkün.",
+"Gözlerine bakmak bile yeter.",
+"En huzurlu yer senin yanın.",
+"İyi ki biz olduk.",
+"Ve hep öyle kalacağız ❤️"
 ];
 
-let current=0;
-let finaleStarted=false;
-const messageEl=document.getElementById("message");
+/* FOTO SLAYTLARI OLUŞTUR */
+for(let i=1;i<=totalPhotos;i++){
+let slide=document.createElement("div");
+slide.className="slide";
 
-function typeWriter(text){
-messageEl.textContent="";
-let i=0;
-let typing=setInterval(()=>{
-messageEl.textContent+=text[i];
-i++;
-if(i>=text.length)clearInterval(typing);
-},40);
+let img=document.createElement("img");
+img.src="foto"+i+".jpg";
+
+let text=document.createElement("div");
+text.className="message";
+text.textContent=messages[i-1] || "";
+
+slide.appendChild(img);
+slide.appendChild(text);
+slideshow.appendChild(slide);
 }
+
+const slides=document.querySelectorAll(".slide");
+let current=0;
+
+/* INTRO 20 SN */
+setTimeout(()=>{
+document.getElementById("intro").style.display="none";
+slideshow.style.display="block";
+showSlide(0);
+setTimeout(startSlideshow,5000);
+startHearts(600);
+startMusic();
+},20000);
 
 function showSlide(index){
 slides.forEach(s=>s.classList.remove("active"));
 slides[index].classList.add("active");
-typeWriter(messages[index]);
-
-if(index===slides.length-1 && !finaleStarted){
-finaleStarted=true;
-startFinale();
-}
 }
 
-showSlide(current);
-
+function startSlideshow(){
 setInterval(()=>{
-if(document.getElementById("slideshow").style.display==="flex"){
 current++;
-if(current>=slides.length){current=slides.length-1;}
+if(current>=slides.length){
+finalScene();
+return;
+}
 showSlide(current);
-}
 },5000);
-
-/* HEART SYSTEM */
-let heartInterval;
-
-function startHearts(speed){
-clearInterval(heartInterval);
-heartInterval=setInterval(()=>{
-createHeart();
-},speed);
 }
 
-function createHeart(sizeMultiplier=1){
-const heart=document.createElement("div");
+/* KALP YAĞMURU */
+function startHearts(speed){
+setInterval(()=>{
+let heart=document.createElement("div");
 heart.className="heart";
-heart.innerHTML="❤️";
+heart.textContent="❤";
 heart.style.left=Math.random()*100+"vw";
-heart.style.fontSize=(20+Math.random()*30)*sizeMultiplier+"px";
+heart.style.fontSize=(15+Math.random()*30)+"px";
 heart.style.animationDuration=(4+Math.random()*3)+"s";
 document.body.appendChild(heart);
 setTimeout(()=>heart.remove(),7000);
+},speed);
 }
 
 /* FINAL */
-function startFinale(){
-
-startHearts(120);
-
-for(let i=0;i<100;i++){
-createHeart(1.5);
+function finalScene(){
+document.getElementById("final").style.display="block";
+startHearts(100);
 }
 
-const finalText=document.createElement("div");
-finalText.innerHTML="SENİ SEVİYORUM ❤️";
-finalText.style.position="fixed";
-finalText.style.top="50%";
-finalText.style.left="50%";
-finalText.style.transform="translate(-50%, -50%) scale(0.5)";
-finalText.style.color="white";
-finalText.style.fontSize="4.5em";
-finalText.style.fontWeight="bold";
-finalText.style.textShadow="0 0 40px red";
-finalText.style.zIndex="99999";
-finalText.style.opacity="0";
-finalText.style.transition="all 2s ease";
-document.body.appendChild(finalText);
-
-setTimeout(()=>{
-finalText.style.opacity="1";
-finalText.style.transform="translate(-50%, -50%) scale(1)";
-},300);
-}
-
-/* MUSIC */
+/* MÜZİK */
+const music=document.getElementById("music");
 const tracks=[
 {src:"song1.mp3",loop:false},
 {src:"song2.mp3",loop:false},
 {src:"song3.mp3",loop:true}
 ];
-
 let trackIndex=0;
-const bgMusic=document.getElementById("bgMusic");
 
-function playTrack(i){
-bgMusic.src=tracks[i].src;
-bgMusic.loop=tracks[i].loop;
-bgMusic.play();
+function startMusic(){
+playTrack(trackIndex);
 }
 
-document.body.addEventListener("click",()=>{
-playTrack(trackIndex);
-},{once:true});
+function playTrack(i){
+music.src=tracks[i].src;
+music.loop=tracks[i].loop;
 
-bgMusic.addEventListener("ended",()=>{
-if(trackIndex<tracks.length-1){
+music.addEventListener("loadedmetadata",function setStart(){
+if(i===2){
+music.currentTime=30;
+}
+music.removeEventListener("loadedmetadata",setStart);
+});
+
+music.play();
+}
+
+music.addEventListener("ended",()=>{
 trackIndex++;
+if(trackIndex<tracks.length){
 playTrack(trackIndex);
 }
 });
-
 </script>
+
 </body>
 </html>
